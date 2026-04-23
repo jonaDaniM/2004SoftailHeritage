@@ -38,7 +38,15 @@ export type TicketStats = {
 
 export type AdminAuditEntry = {
   id: string;
-  action: "approve" | "reject" | "cancel" | "draw_free" | "draw_paid" | "payment_submit";
+  action:
+    | "approve"
+    | "reject"
+    | "cancel"
+    | "draw_free"
+    | "draw_paid"
+    | "payment_submit"
+    | "manual_mark_sold"
+    | "manual_restore_available";
   ticketNumber: number;
   actor: string;
   createdAt: string;

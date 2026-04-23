@@ -164,6 +164,36 @@ export const createLocalStorageRepository = (): TicketRepository => ({
     return updated;
   },
 
+  async manualMarkSold(ticketNumber, note = null) {
+    const updated = withTicketUpdate(ticketNumber, (ticket) => ({
+      ...ticket,
+      status: "sold",
+      buyerName: ticket.buyerName ?? "Manual Entry",
+      paymentMethod: ticket.paymentMethod,
+      paymentReference: note ?? ticket.paymentReference,
+      reservedBySessionId: null,
+      updatedAt: nowIso()
+    }));
+
+    recordAudit("manual_mark_sold", ticketNumber, "admin", note);
+    return updated;
+  },
+
+  async manualRestoreAvailable(ticketNumber, note = null) {
+    const updated = withTicketUpdate(ticketNumber, (ticket) => ({
+      ...ticket,
+      status: "available",
+      buyerName: null,
+      paymentMethod: null,
+      paymentReference: null,
+      reservedBySessionId: null,
+      updatedAt: nowIso()
+    }));
+
+    recordAudit("manual_restore_available", ticketNumber, "admin", note);
+    return updated;
+  },
+
   async cancelReservation(ticketNumber, sessionId) {
     const updated = withTicketUpdate(ticketNumber, (ticket) => {
       if (ticket.reservedBySessionId !== sessionId) {

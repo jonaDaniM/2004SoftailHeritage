@@ -61,6 +61,22 @@ export const createSupabaseRepository = (): TicketRepository => ({
     return response.ticket;
   },
 
+  async manualMarkSold(ticketNumber, note = null) {
+    const response = await jsonFetch<TicketResponse>("/api/admin-manual-ticket", {
+      method: "POST",
+      body: JSON.stringify({ ticketNumber, operation: "mark_sold", note })
+    });
+    return response.ticket;
+  },
+
+  async manualRestoreAvailable(ticketNumber, note = null) {
+    const response = await jsonFetch<TicketResponse>("/api/admin-manual-ticket", {
+      method: "POST",
+      body: JSON.stringify({ ticketNumber, operation: "restore_available", note })
+    });
+    return response.ticket;
+  },
+
   async cancelReservation(ticketNumber, sessionId) {
     const response = await jsonFetch<TicketResponse>("/api/cancel-reservation", {
       method: "POST",

@@ -15,6 +15,8 @@ export type TicketRepository = {
   submitPayment: (input: PaymentSubmissionInput) => Promise<Ticket>;
   approveTicket: (ticketNumber: number) => Promise<Ticket>;
   rejectTicket: (ticketNumber: number) => Promise<Ticket>;
+  manualMarkSold: (ticketNumber: number, note?: string | null) => Promise<Ticket>;
+  manualRestoreAvailable: (ticketNumber: number, note?: string | null) => Promise<Ticket>;
   cancelReservation: (ticketNumber: number, sessionId: string) => Promise<Ticket>;
   listAuditLog: () => Promise<AdminAuditEntry[]>;
   subscribe: (onChange: () => void) => () => void;

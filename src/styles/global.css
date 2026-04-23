@@ -406,6 +406,21 @@ select {
   margin-top: 0.7rem;
 }
 
+.manual-admin-controls {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #2b2b2c;
+}
+
+.manual-form {
+  margin-top: 0.6rem;
+  display: grid;
+  grid-template-columns: 120px 1fr auto auto;
+  gap: 0.5rem;
+}
+
 .filter {
   background: #2e2e2f;
   color: #d4d4d4;
@@ -473,5 +488,9 @@ select {
 
   .gallery-item img {
     height: auto;
+  }
+
+  .manual-form {
+    grid-template-columns: 1fr;
   }
 }

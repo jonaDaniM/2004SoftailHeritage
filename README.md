@@ -74,6 +74,10 @@ npm run dev
 - Admin session is cookie-based (`HttpOnly`, `SameSite=Lax`, `Secure`) and checked by admin functions.
 - Logout clears session cookie.
 - In `VITE_PERSISTENCE_MODE=local`, admin auth uses sessionStorage-only demo auth (no server secret validation).
+- Admin dashboard supports manual ticket controls:
+  - `Remove Number` (manual mark sold)
+  - `Restore Number` (return to available)
+  - Both actions are written to the admin audit log.
 
 ## Ticket Lifecycle and State Rules
 - Canonical ticket model:

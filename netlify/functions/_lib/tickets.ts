@@ -12,7 +12,15 @@ export type TicketRow = {
   updatedAt: string;
 };
 
-export type AuditAction = "approve" | "reject" | "cancel" | "draw_free" | "draw_paid" | "payment_submit";
+export type AuditAction =
+  | "approve"
+  | "reject"
+  | "cancel"
+  | "draw_free"
+  | "draw_paid"
+  | "payment_submit"
+  | "manual_mark_sold"
+  | "manual_restore_available";
 
 const now = () => new Date().toISOString();
 

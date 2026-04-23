@@ -48,6 +48,8 @@ type RaffleContextValue = {
   checkAdminSession: () => Promise<void>;
   adminApprove: (ticketNumber: number) => Promise<void>;
   adminReject: (ticketNumber: number) => Promise<void>;
+  adminManualMarkSold: (ticketNumber: number, note?: string) => Promise<void>;
+  adminManualRestoreAvailable: (ticketNumber: number, note?: string) => Promise<void>;
   resetForNextPurchase: () => void;
 };
 
@@ -293,6 +295,26 @@ export const RaffleProvider = ({ children }: Props) => {
     await refreshAll();
   }, [refreshAll, state.lockedTicket?.number]);
 
+  const adminManualMarkSold = useCallback(async (ticketNumber: number, note = "") => {
+    await repository.manualMarkSold(ticketNumber, note.trim() || null);
+
+    if (state.lockedTicket?.number === ticketNumber) {
+      dispatch({ type: "set_transaction_status", payload: "approved" });
+    }
+
+    await refreshAll();
+  }, [refreshAll, state.lockedTicket?.number]);
+
+  const adminManualRestoreAvailable = useCallback(async (ticketNumber: number, note = "") => {
+    await repository.manualRestoreAvailable(ticketNumber, note.trim() || null);
+
+    if (state.lockedTicket?.number === ticketNumber) {
+      dispatch({ type: "set_transaction_status", payload: "rejected" });
+    }
+
+    await refreshAll();
+  }, [refreshAll, state.lockedTicket?.number]);
+
   const setAdminFilter = (filter: RaffleState["adminFilter"]) => {
     dispatch({ type: "set_admin_filter", payload: filter });
   };
@@ -356,6 +378,8 @@ export const RaffleProvider = ({ children }: Props) => {
         checkAdminSession,
         adminApprove,
         adminReject,
+        adminManualMarkSold,
+        adminManualRestoreAvailable,
         resetForNextPurchase
       }}
     >
