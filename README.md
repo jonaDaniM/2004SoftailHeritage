@@ -60,6 +60,12 @@ npm run dev
 
 `netlify.toml` already includes SPA redirect (`/* /index.html 200`) and `/api/*` function routing.
 
+## GitHub Pages Deployment
+- GitHub Pages is configured via `.github/workflows/deploy-pages.yml`.
+- Every push to `main` builds and deploys `dist` to Pages.
+- Pages build uses `VITE_PERSISTENCE_MODE=local` (demo mode), because Netlify Functions are not available on GitHub Pages.
+- For full admin/password-protected function flow, use Netlify deployment.
+
 ## Admin Auth and Hidden Access
 - No visible admin button in header/banner.
 - Hidden entry is a **5-tap sequence** on the footer `Support` trigger.
