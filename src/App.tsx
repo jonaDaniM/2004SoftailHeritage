@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { BackButton } from "./components/BackButton";
 import { TicketBoard } from "./components/TicketBoard";
@@ -72,16 +72,66 @@ const HomeScreen = () => {
 const DrawScreen = () => {
   const { drawTicket, state } = useRaffle();
   const navigate = useNavigate();
+  const intervalRef = useRef<number | null>(null);
+  const timeoutRef = useRef<number | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [rollingNumber, setRollingNumber] = useState<number | null>(null);
 
   const lastDraw = state.drawHistory.at(-1) ?? null;
 
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        window.clearInterval(intervalRef.current);
+      }
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   const onDraw = async () => {
+    if (isDrawing) return;
+
+    setIsDrawing(true);
+    setRollingNumber(Math.floor(Math.random() * 200) + 1);
+    intervalRef.current = window.setInterval(() => {
+      setRollingNumber(Math.floor(Math.random() * 200) + 1);
+    }, 70);
+
+    const animationDelay = new Promise<void>((resolve) => {
+      timeoutRef.current = window.setTimeout(() => resolve(), 1500);
+    });
+
     const ticket = await drawTicket();
-    if (!ticket) return;
+    await animationDelay;
+
+    if (intervalRef.current) {
+      window.clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    if (!ticket) {
+      setIsDrawing(false);
+      setRollingNumber(null);
+      return;
+    }
+
+    setRollingNumber(ticket.number);
 
     if (ticket.tier === "paid") {
-      navigate("/payment");
+      timeoutRef.current = window.setTimeout(() => {
+        setIsDrawing(false);
+        setRollingNumber(null);
+        navigate("/payment");
+      }, 550);
+      return;
     }
+
+    timeoutRef.current = window.setTimeout(() => {
+      setIsDrawing(false);
+      setRollingNumber(null);
+    }, 550);
   };
 
   return (
@@ -94,7 +144,22 @@ const DrawScreen = () => {
         Free ticket drawn? Keep drawing. Paid ticket drawn? It locks and you proceed to payment.
       </p>
 
-      {lastDraw ? (
+      {isDrawing ? (
+        <div className="draw-animation">
+          <p>Drawing ticket...</p>
+          <div className="draw-reel">
+            <span>#</span>
+            <strong>{rollingNumber ?? "--"}</strong>
+          </div>
+          <div className="draw-dots" aria-hidden>
+            <span />
+            <span />
+            <span />
+          </div>
+        </div>
+      ) : null}
+
+      {!isDrawing && lastDraw ? (
         <div className={`draw-result ${lastDraw.tier}`}>
           <p>Last Draw</p>
           <h3>#{lastDraw.number}</h3>
@@ -104,8 +169,8 @@ const DrawScreen = () => {
 
       <div className="cta-row">
         {canContinueDrawAfterResult(lastDraw) || !lastDraw ? (
-          <button type="button" className="primary-btn" onClick={() => void onDraw()}>
-            Draw Now
+          <button type="button" className="primary-btn" onClick={() => void onDraw()} disabled={isDrawing}>
+            {isDrawing ? "Drawing..." : "Draw Now"}
           </button>
         ) : null}
 
