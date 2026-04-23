@@ -10,13 +10,14 @@ import { canContinueDrawAfterResult, canSubmitPayment } from "./domain/stateMach
 import type { PaymentMethod } from "./domain/ticket";
 
 const paymentMethods: PaymentMethod[] = ["zelle", "cashapp"];
+const base = import.meta.env.BASE_URL;
 const galleryImages = [
-  { src: "/gallery/shared-image-1.png", alt: "2004 Heritage Softail side profile view" },
-  { src: "/gallery/shared-image-2.png", alt: "2004 Heritage Softail front-left angle" },
-  { src: "/gallery/shared-image-3.png", alt: "2004 Heritage Softail front-quarter view" },
-  { src: "/gallery/shared-image-4.png", alt: "2004 Heritage Softail parking-lot angle" },
-  { src: "/gallery/shared-image-5.png", alt: "2004 Heritage Softail close front-quarter view" },
-  { src: "/gallery/shared-image-6.png", alt: "2004 Heritage Softail clean side profile" }
+  { src: `${base}gallery/shared-image-1.png`, alt: "2004 Heritage Softail side profile view" },
+  { src: `${base}gallery/shared-image-2.png`, alt: "2004 Heritage Softail front-left angle" },
+  { src: `${base}gallery/shared-image-3.png`, alt: "2004 Heritage Softail front-quarter view" },
+  { src: `${base}gallery/shared-image-4.png`, alt: "2004 Heritage Softail parking-lot angle" },
+  { src: `${base}gallery/shared-image-5.png`, alt: "2004 Heritage Softail close front-quarter view" },
+  { src: `${base}gallery/shared-image-6.png`, alt: "2004 Heritage Softail clean side profile" }
 ];
 
 const HomeScreen = () => {
